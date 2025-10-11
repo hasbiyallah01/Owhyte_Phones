@@ -19,5 +19,5 @@ packages/
 # Secrets
 appsettings.Development.json
 appsettings.json
-
+.gitattributes
 
