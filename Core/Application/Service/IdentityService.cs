@@ -1,22 +1,22 @@
-﻿using Habit_Battles.Core.Application.Interfaces.Services;
-using Habit_Battles.Models.UserModel;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
+using Owhytee_Phones.Core.Application.Interfaces.Services;
+using Owhytee_Phones.Models.AuthModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Habit_Battles.Core.Application.Services
+namespace Owhytee_Phones.Core.Application.Services
 {
     public class IdentityService : IIdentityService
     {
-        public string GenerateToken(string key, string issuer, LoginResponse user)
+        public string GenerateToken(string key, string issuer, UserResponse user)
         {
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -26,7 +26,6 @@ namespace Habit_Battles.Core.Application.Services
             var token = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
             return token;
         }
-
 
 
         public bool IsTokenValid(string key, string issuer, string token)
@@ -72,8 +71,6 @@ namespace Habit_Battles.Core.Application.Services
             {
                 return 0;
             }
-
-
         }
 
     }
