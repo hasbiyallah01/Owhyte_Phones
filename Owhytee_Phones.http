@@ -1,0 +1,6 @@
+@Owhytee_Phones_HostAddress = http://localhost:5197
+
+GET {{Owhytee_Phones_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
