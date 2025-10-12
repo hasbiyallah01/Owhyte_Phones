@@ -1,4 +1,5 @@
-﻿using Owhytee_Phones.Core.Application.Interface.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Owhytee_Phones.Core.Application.Interface.Repository;
 using Owhytee_Phones.Core.Domain.Entity;
 using System.Linq.Expressions;
 
@@ -6,41 +7,77 @@ namespace Owhytee_Phones.Infrastructure.Repository
 {
     public class ProductVariantRepository : IProductVariantRepository
     {
-        public Task<ProductVariant> AddAsync(ProductVariant variant)
+        private OwhyteeContext _context;
+        public ProductVariantRepository(OwhyteeContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<ProductVariant> AddAsync(ProductVariant variant)
+        {
+            await _context.Set<ProductVariant>()
+                .AddAsync(variant);
+            return variant;
         }
 
 
-        public Task<bool> ExistAsync(int id)
+        public async Task<bool> ExistAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.ProductVariants.AnyAsync(a => a.Id == id);
         }
 
-        public Task<ICollection<ProductVariant>> GetAllAsync()
+        public async Task<ICollection<ProductVariant>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Set<ProductVariant>().ToListAsync();
         }
 
-        public Task<ProductVariant> GetAsync(int id)
+        public async Task<ProductVariant> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var answer = await _context.Set<ProductVariant>()
+                .Where(a => a.Id == id && a.IsDeleted!)
+                .SingleOrDefaultAsync();
+
+            return answer;
         }
 
 
-        public Task<ProductVariant> GetAsync(Expression<Func<ProductVariant, bool>> exp)
+        public async Task<ProductVariant> GetAsync(Expression<Func<ProductVariant, bool>> exp)
         {
-            throw new NotImplementedException();
+            var answer = await _context.Set<ProductVariant>()
+                .Where(a => a.IsDeleted!)
+                .SingleOrDefaultAsync(exp);
+            return answer;
+        }
+
+        public async Task<ProductVariant> GetByProductIdAsync(int id)
+        {
+            var answer = await _context.Set<ProductVariant>()
+                .Where(a => a.ProductId == id && a.IsDeleted!)
+                .SingleOrDefaultAsync();
+
+            return answer;
+        }
+
+        public async Task<IEnumerable<ProductVariant>> GetAllByProductIdAsync(int id)
+        {
+            var answer = await _context.Set<ProductVariant>()
+                .Where(a => a.ProductId == id && a.IsDeleted!)
+                .ToListAsync();
+
+            return answer;
         }
 
         public void Remove(ProductVariant varaint)
         {
-            throw new NotImplementedException();
+            varaint.IsDeleted = true;
+            _context.Set<ProductVariant>()
+                .Update(varaint);
         }
 
         public ProductVariant Update(ProductVariant varaint)
         {
-            throw new NotImplementedException();
+            _context.Set<ProductVariant>()
+                .Update(varaint);
+            return varaint;
         }
     }
 }

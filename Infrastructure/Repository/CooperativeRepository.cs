@@ -1,4 +1,5 @@
-﻿using Owhytee_Phones.Core.Application.Interface.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Owhytee_Phones.Core.Application.Interface.Repository;
 using Owhytee_Phones.Core.Domain.Entity;
 using System.Linq.Expressions;
 
@@ -6,39 +7,58 @@ namespace Owhytee_Phones.Infrastructure.Repository
 {
     public class CooperativeRepository : ICooperativeRepository
     {
-        public Task<Cooperative> AddAsync(Cooperative cooperative)
+        private OwhyteeContext _context;
+        public CooperativeRepository(OwhyteeContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<Cooperative> AddAsync(Cooperative cooperative)
+        {
+            await _context.Set<Cooperative>().
+                AddAsync(cooperative);
+            return cooperative;
         }
 
-        public Task<bool> ExistAsync(int id)
+        
+
+        public async Task<bool> ExistAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Cooperatives.AnyAsync(a  => a.Id == id);
         }
 
-        public Task<ICollection<Cooperative>> GetAllAsync()
+        public async Task<IEnumerable<Cooperative>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Set<Cooperative>().ToListAsync();
         }
 
-        public Task<Cooperative> GetAsync(int id)
+        public async Task<Cooperative> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var cooperative = await _context.Set<Cooperative>()
+                .Where(a => a.Id == id)
+                .SingleOrDefaultAsync();
+            return cooperative;
         }
 
-        public Task<Cooperative> GetAsync(Expression<Func<Cooperative, bool>> exp)
+        public async Task<Cooperative> GetAsync(Expression<Func<Cooperative, bool>> exp)
         {
-            throw new NotImplementedException();
+            var cooperative = await _context.Set<Cooperative>()
+                .Where(a => a.IsDeleted)
+                .SingleOrDefaultAsync(exp);
+            return cooperative;
         }
 
         public void Remove(Cooperative cooperative)
         {
-            throw new NotImplementedException();
+            cooperative.IsDeleted = true;
+            _context.Set<Cooperative>()
+                .Update(cooperative);
         }
 
         public Cooperative Update(Cooperative cooperative)
         {
-            throw new NotImplementedException();
+            _context.Set<Cooperative>()
+                .Update(cooperative);
+            return cooperative;
         }
     }
 }

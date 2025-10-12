@@ -8,8 +8,10 @@ namespace Owhytee_Phones.Core.Application.Interface.Repository
         Task<Order> AddAsync(Order order);
         Task<Order> GetAsync(int id);
         Task<Order> GetAsync(Expression<Func<Order, bool>> exp);
-        Task<ICollection<Order>> GetAllAsync();
+        Task<IEnumerable<Order>> GetAllAsync();
         void Remove(Order order);
+        Task<ICollection<Order>> GetAllAsync(int id);
+        Task<Dictionary<int, int>> GetOrderCountsByCooperativeAsync();
         Order Update(Order order);
         Task<bool> ExistAsync(int id);
     }

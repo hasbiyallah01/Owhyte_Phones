@@ -1,44 +1,68 @@
-﻿using Owhytee_Phones.Core.Application.Interface.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Owhytee_Phones.Core.Application.Interface.Repository;
 using Owhytee_Phones.Core.Domain.Entity;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Owhytee_Phones.Infrastructure.Repository
 {
     public class ProductImageRepository : IProductImageRepository
     {
-        public Task<ProductImage> AddAsync(ProductImage productImage)
+        private OwhyteeContext _context;
+        public ProductImageRepository(OwhyteeContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<ProductImage> AddAsync(ProductImage productImage)
+        {
+            await _context.Set<ProductImage>()
+                .AddAsync(productImage);
+            return productImage;
         }
 
-        public Task<bool> ExistAsync(int id)
+        public async Task<bool> ExistAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.ProductImages.AnyAsync(x => x.Id == id);
         }
 
-        public Task<ICollection<ProductImage>> GetAllAsync()
+        public async Task<ICollection<ProductImage>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Set<ProductImage>().ToListAsync();
         }
 
-        public Task<ProductImage> GetAsync(int id)
+        public async Task<ICollection<ProductImage>> GetAllAsync(int productId, int imageId)
         {
-            throw new NotImplementedException();
+            return await _context.Set<ProductImage>()
+                .Where(a => a.ProductId == productId && a.Id == imageId)
+                .ToListAsync();
         }
 
-        public Task<ProductImage> GetAsync(Expression<Func<ProductImage, bool>> exp)
+        public async Task<ProductImage> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Set<ProductImage>()
+                .Where(x => x.Id == id && x.IsDeleted!)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<ProductImage> GetAsync(Expression<Func<ProductImage, bool>> exp)
+        {
+            return await _context.Set<ProductImage>()
+                .Where(x => x.IsDeleted!)
+                .SingleOrDefaultAsync(exp);
         }
 
         public void Remove(ProductImage productImage)
         {
-            throw new NotImplementedException();
+            productImage.IsDeleted = true;
+            _context.Set<ProductImage>()
+                .Update(productImage);
         }
 
         public ProductImage Update(ProductImage productImage)
         {
-            throw new NotImplementedException();
+            _context.Set<ProductImage>()
+                .Update(productImage);
+            return productImage;
         }
     }
 }

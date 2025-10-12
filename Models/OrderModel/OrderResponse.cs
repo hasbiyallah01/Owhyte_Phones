@@ -12,9 +12,9 @@ namespace Owhytee_Phones.Models.OrderModel
         public string? DeliveryAddress { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public CooperativeResponse? CooperativeResponse { get; set; }
-        public List<OrderItemResponse> Items { get; set; } = new List<OrderItemResponse>();
+        public DateTime? CreatedAt { get; set; }
+        public CooperativeResponse? Cooperative { get; set; }
+        public List<OrderItemResponse> OrderItems { get; set; } = new List<OrderItemResponse>();
     }
 
     public class UpdateOrderStatusDto

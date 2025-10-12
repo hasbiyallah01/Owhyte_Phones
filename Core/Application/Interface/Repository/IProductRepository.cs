@@ -8,7 +8,7 @@ namespace Owhytee_Phones.Core.Application.Interface.Repository
         Task<Product> AddAsync(Product product);
         Task<Product> GetAsync(int id);
         Task<Product> GetAsync(Expression<Func<Product, bool>> exp);
-        Task<ICollection<Product>> GetAllAsync();
+        Task<IEnumerable<Product>> GetAllAsync();
         void Remove(Product product);
         Product Update(Product product);
         Task<bool> ExistAsync(int id);

@@ -9,4 +9,11 @@ namespace Owhytee_Phones.Core.Domain.Entity
         public bool IsAdmin { get; set; }
         public Role Role { get; set; } = Role.User;
     }
+
+    public class CloudinarySettings
+    {
+        public string CloudName { get; set; } = string.Empty;
+        public string ApiKey { get; set; } = string.Empty;
+        public string ApiSecret { get; set; } = string.Empty;
+    }
 }

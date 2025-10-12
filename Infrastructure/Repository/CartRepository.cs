@@ -1,4 +1,5 @@
-﻿using Owhytee_Phones.Core.Application.Interface.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Owhytee_Phones.Core.Application.Interface.Repository;
 using Owhytee_Phones.Core.Domain.Entity;
 using System.Linq.Expressions;
 
@@ -6,39 +7,56 @@ namespace Owhytee_Phones.Infrastructure.Repository
 {
     public class CartRepository : ICartRepository
     {
-        public Task<Cart> AddAsync(Cart cart)
+        private OwhyteeContext _context;
+        public CartRepository(OwhyteeContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<bool> ExistAsync(int id)
+        public async Task<Cart> AddAsync(Cart cart)
         {
-            throw new NotImplementedException();
+            await _context.Set<Cart>().AddAsync(cart);
+            return cart;
         }
 
-        public Task<ICollection<Cart>> GetAllAsync()
+        public async Task<bool> ExistAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Carts.AnyAsync(a => a.Id == id);
         }
 
-        public Task<Cart> GetAsync(int id)
+        public async Task<ICollection<Cart>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var cart = await _context.Set<Cart>().ToListAsync();
+            return cart;
         }
 
-        public Task<Cart> GetAsync(Expression<Func<Cart, bool>> exp)
+        public async Task<Cart> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var cart = await _context.Set<Cart>()
+                .Where(a => !a.IsDeleted && a.Id == id)
+                .SingleOrDefaultAsync();
+            return cart;
+        }
+
+        public async Task<Cart> GetAsync(Expression<Func<Cart, bool>> exp)
+        {
+            var cart = await _context.Set<Cart>()
+                    .Where(a => !a.IsDeleted)
+                    .SingleOrDefaultAsync(exp);
+            return cart;
         }
 
         public void Remove(Cart cart)
         {
-            throw new NotImplementedException();
+            cart.IsDeleted = true;
+            _context.Set<Cart>().Update(cart);
+            _context.SaveChanges();
         }
 
         public Cart Update(Cart cart)
         {
-            throw new NotImplementedException();
+            _context.Carts.Update(cart);
+            return cart;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Owhytee_Phones.Core.Application.Interface.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Owhytee_Phones.Core.Application.Interface.Repository;
 using Owhytee_Phones.Core.Domain.Entity;
 using System.Linq.Expressions;
 
@@ -6,39 +7,54 @@ namespace Owhytee_Phones.Infrastructure.Repository
 {
     public class OrderItemRepository : IOrderItemRepository
     {
-        public Task<OrderItem> AddAsync(OrderItem orderItem)
+        private OwhyteeContext _context;
+        public OrderItemRepository(OwhyteeContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<OrderItem> AddAsync(OrderItem orderItem)
+        {
+            await _context.Set<OrderItem>()
+                .AddAsync(orderItem);
+            return orderItem;
         }
 
-        public Task<bool> ExistAsync(int id)
+        public async Task<bool> ExistAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.OrderItems.AnyAsync(a => a.Id == id);
         }
 
-        public Task<ICollection<OrderItem>> GetAllAsync()
+        public async Task<ICollection<OrderItem>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Set<OrderItem>().ToListAsync();
         }
 
-        public Task<OrderItem> GetAsync(int id)
+        public async Task<OrderItem> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var answer = await _context.Set<OrderItem>()
+                .Where(a => a.Id == id && a.IsDeleted!)
+                .SingleOrDefaultAsync();
+            return answer;
         }
 
-        public Task<OrderItem> GetAsync(Expression<Func<OrderItem, bool>> exp)
+        public async Task<OrderItem> GetAsync(Expression<Func<OrderItem, bool>> exp)
         {
-            throw new NotImplementedException();
+            var answer = await _context.Set<OrderItem>()
+                .Where(a => a.IsDeleted!)
+                .SingleOrDefaultAsync(exp);
+            return answer;
         }
 
         public void Remove(OrderItem orderItem)
         {
-            throw new NotImplementedException();
+            orderItem.IsDeleted = true;
+            _context.Set<OrderItem>().Update(orderItem);
         }
 
         public OrderItem Update(OrderItem orderItem)
         {
-            throw new NotImplementedException();
+            _context.Set<OrderItem>().Update(orderItem);
+            return orderItem;
         }
     }
 }

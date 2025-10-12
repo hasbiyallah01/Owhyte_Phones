@@ -7,10 +7,12 @@ namespace Owhytee_Phones.Core.Application.Interface.Repository
     {
         Task<ProductVariant> AddAsync(ProductVariant variant);
         Task<ProductVariant> GetAsync(int id);
+        Task<ProductVariant> GetByProductIdAsync(int id);
         Task<ProductVariant> GetAsync(Expression<Func<ProductVariant, bool>> exp);
         Task<ICollection<ProductVariant>> GetAllAsync();
         void Remove(ProductVariant varaint);
         ProductVariant Update(ProductVariant varaint);
         Task<bool> ExistAsync(int id);
+        Task<IEnumerable<ProductVariant>> GetAllByProductIdAsync(int id);
     }
 }

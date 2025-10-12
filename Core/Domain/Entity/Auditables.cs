@@ -1,4 +1,6 @@
-﻿namespace Owhytee_Phones.Core.Domain.Entity
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Owhytee_Phones.Core.Domain.Entity
 {
     public class Auditables
     {

@@ -1,4 +1,5 @@
-﻿using Owhytee_Phones.Core.Application.Interface.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Owhytee_Phones.Core.Application.Interface.Repository;
 using Owhytee_Phones.Core.Domain.Entity;
 using System.Linq.Expressions;
 
@@ -6,39 +7,53 @@ namespace Owhytee_Phones.Infrastructure.Repository
 {
     public class ProductRepository : IProductRepository
     {
-        public Task<Product> AddAsync(Product product)
+        private OwhyteeContext _context;
+        public ProductRepository(OwhyteeContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<Product> AddAsync(Product product)
+        {
+            await _context.Set<Product>().AddAsync(product);
+            return product;
         }
 
-        public Task<bool> ExistAsync(int id)
+        public async Task<bool> ExistAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Products.AnyAsync(p => p.Id == id);
         }
 
-        public Task<ICollection<Product>> GetAllAsync()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Set<Product>().ToListAsync();
         }
 
-        public Task<Product> GetAsync(int id)
+        public async Task<Product> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = await _context.Set<Product>()
+                .Where(p => p.Id == id && p.IsDeleted!)
+                .SingleOrDefaultAsync();
+            return result;
         }
 
-        public Task<Product> GetAsync(Expression<Func<Product, bool>> exp)
+        public async Task<Product> GetAsync(Expression<Func<Product, bool>> exp)
         {
-            throw new NotImplementedException();
+            var result = await _context.Set<Product>()
+                .Where(p => p.IsDeleted!)
+                .SingleOrDefaultAsync(exp);
+            return result;
         }
 
         public void Remove(Product product)
         {
-            throw new NotImplementedException();
+            product.IsDeleted = true;
+            _context.Set<Product>().Update(product);
         }
 
         public Product Update(Product product)
         {
-            throw new NotImplementedException();
+            _context.Set<Product>().Update(product); 
+            return product;
         }
     }
 }

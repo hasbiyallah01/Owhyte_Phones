@@ -7,10 +7,11 @@ namespace Owhytee_Phones.Core.Application.Interface.Service
         Task<PagedResult<ProductResponse>> GetProductAsync(ProductFilterResponse filter, int page = 1, int pageSize = 20);
         Task<ProductResponse> GetProductByIdAsync(int Id);
         Task<List<string>> GetBrandsAsync();
-        Task<ProductResponse> CreateProductAsync(int id, UpdateProductRequest updateProductDto);
+        Task<ProductResponse> CreateProductAsync(ProductRequest updateProductDto);
         Task<bool> DeleteProductAsync(int Id);
         Task<bool> UpdateStockStatusAsync(int Id, bool isInStock);
         Task<List<ProductVariantResponse>> GetProductVariantsAsync(int productId);
+        Task<ProductResponse> UpdateProductAsync(int Id, UpdateProductRequest productRequest);
         Task<ProductVariantResponse> AddProductVariantAsync(int productId, ProductVariantRequest variantRequest); 
         Task<ProductVariantResponse> UpdateVariantAsync(int variantId, UpdateProductVariantRequest variantRequest);
         Task<bool> DeleteVariantAsync(int variantId);
