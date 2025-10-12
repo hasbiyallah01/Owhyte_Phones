@@ -1,6 +1,6 @@
 ﻿namespace Owhytee_Phones.Core.Domain.Entity
 {
-    public class Cart
+    public class Cart : Auditables
     {
         public string SessionId { get; set; }
 

@@ -8,6 +8,8 @@
         public string? Address { get; set; }
         public bool IsActive { get; set; }
 
+        public List<Order> Orders { get; set; } = new List<Order>();
+
         public ICollection<OrderItem> Items { get; set; }  = new List<OrderItem>();
     }
 }
