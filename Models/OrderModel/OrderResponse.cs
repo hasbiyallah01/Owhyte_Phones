@@ -22,8 +22,4 @@ namespace Owhytee_Phones.Models.OrderModel
         public OrderStatus Status { get; set; }
     }
 
-    public class AssignOrder
-    {
-        public int CooperativeId { get; set; }
-    }
 }

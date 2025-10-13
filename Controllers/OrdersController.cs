@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Owhytee_Phones.Core.Application.Interface.Service;
+using Owhytee_Phones.Core.Domain.Enum;
 using Owhytee_Phones.Models.OrderModel;
 using Owhytee_Phones.Models.ProductModel;
 
@@ -57,6 +58,84 @@ namespace Owhytee_Phones.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving orders");
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OrderResponse>> GetOrderById(int id)
+        {
+            try
+            {
+                var order = await _orderService.GetOrderByIdAsync(id);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Order not found" });
+                }
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving order with ID {id}");
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
+
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<OrderResponse>> UpdateOrderStatus(int id, [FromBody] OrderStatus status)
+        {
+            try
+            {
+                var order = await _orderService.UpdateOrderStatusAsync(id, status);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Order not found or status update failed" });
+                }
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating status for order with ID {id}");
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
+
+        [HttpPost("{orderId}/assign/{cooperativeId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<OrderResponse>> AssignOrderToCooperative(int orderId, int cooperativeId)
+        {
+            try
+            {
+                var order = await _orderService.AssignOrderToCooperativeAsync(orderId, cooperativeId);
+                if (order == null)
+                {
+                    return NotFound(new { message = "Order not found or assignment failed" });
+                }
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error assigning order with ID {orderId} to cooperative {cooperativeId}");
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
+
+        [HttpGet("{orderId}/whatsapp")]
+        public async Task<ActionResult<WhatsAppMessageRequest>> GenerateWhatsAppMessage(int orderId)
+        {
+            try
+            {
+                var message = await _orderService.GenerateWhatsAppMessageAsync(orderId);
+                if (message == null)
+                {
+                    return NotFound(new { message = "Order not found or message generation failed" });
+                }
+                return Ok(message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error generating WhatsApp message for order with ID {orderId}");
                 return StatusCode(500, new { message = "Internal server error" });
             }
         }

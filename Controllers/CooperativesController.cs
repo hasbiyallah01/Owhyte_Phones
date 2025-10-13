@@ -30,6 +30,11 @@ namespace Owhytee_Phones.Controllers
         public async Task<IActionResult> AddToCart(string sessionId, [FromBody] CartRequest cartRequest)
         {
             var cart = await _cartService.AddToCartAsync(sessionId, cartRequest);
+            if (cart == null)
+            {
+                return BadRequest(new { message = "Failed to add item to cart" });
+            }
+
             return Ok(cart);
         }
 
@@ -70,6 +75,10 @@ namespace Owhytee_Phones.Controllers
         public async Task<IActionResult> GetCartTotal(string sessionId)
         {
             var total = await _cartService.GetCartTotalAsync(sessionId);
+            if (total == 0)
+            {
+                return NotFound(new { message = "Cart not found or empty" });
+            }
             return Ok(new { total });
         }
     }

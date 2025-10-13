@@ -23,6 +23,10 @@ public class CartService : ICartService
     public async Task<CartResponse> GetCartAsync(string sessionId)
     {
         var cart = await _cartRepository.GetAsync(c => c.SessionId == sessionId);
+        if (cart == null)
+            return null;
+
+
         return await MapToCartDtoAsync(cart);
     }
 
@@ -40,9 +44,7 @@ public class CartService : ICartService
             await _context.SaveChangesAsync();
         }
 
-        var existingItem = await _cartItemRepository.GetAsync(ci => ci.CartId== cart.Id &&
-                                     ci.ProductId == addToCartDto.ProductId &&
-                                     ci.VariantId == addToCartDto.ProductVariantId);
+        var existingItem = await _cartItemRepository.GetAsync(ci => ci.CartId== cart.Id && ci.ProductId == addToCartDto.ProductId && ci.VariantId == addToCartDto.ProductVariantId);
 
         if (existingItem != null)
         {
@@ -81,8 +83,7 @@ public class CartService : ICartService
             _context.CartItems.Add(Item);
             await _context.SaveChangesAsync();
         }
-        var cartItem = await _context.CartItems
-            .FirstOrDefaultAsync(ci => ci.Id == cartItemId && ci.CartId == cart.Id);
+        var cartItem = await _cartItemRepository.GetAsync(ci => ci.Id == cartItemId && ci.CartId == cart.Id);
 
         if (cartItem == null)
             throw new KeyNotFoundException("Cart item not found");
@@ -111,8 +112,8 @@ public class CartService : ICartService
         if (cartItem == null)
             throw new KeyNotFoundException("Cart item not found");
 
-        _context.CartItems.Remove(cartItem);
         cart.DateModified = DateTime.UtcNow;
+        _cartItemRepository.Remove(cartItem);
         await _context.SaveChangesAsync();
 
         return await MapToCartDtoAsync(cart);
@@ -126,8 +127,8 @@ public class CartService : ICartService
         if (cart == null)
             return false;
 
-        _context.CartItems.RemoveRange(cart.CartItems);
         cart.DateModified = DateTime.UtcNow;
+        _context.CartItems.RemoveRange(cart.CartItems);
         await _context.SaveChangesAsync();
 
         return true;

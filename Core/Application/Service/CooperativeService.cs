@@ -28,9 +28,7 @@ public class CooperativeService : ICooperativeService
         if (activeOnly)
             query = query.Where(c => c.IsActive);
 
-        var cooperatives = query
-            .OrderBy(c => c.Name)
-            .ToList();
+        var cooperatives = query.OrderBy(c => c.Name).ToList();
 
         return cooperatives.Select(MapToCooperativeDto).ToList();
     }
@@ -38,6 +36,9 @@ public class CooperativeService : ICooperativeService
     public async Task<CooperativeResponse?> GetCooperativeByIdAsync(int id)
     {
         var cooperative = await _cooperativeRepository.GetAsync(id);
+        if (cooperative == null)
+            return null;
+
         return cooperative != null ? MapToCooperativeDto(cooperative) : null;
     }
 
