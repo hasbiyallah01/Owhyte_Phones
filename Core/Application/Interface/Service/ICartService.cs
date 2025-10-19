@@ -1,4 +1,5 @@
 using Owhytee_Phones.Models.CartModel;
+using Owhytee_Phones.Models.PreferenceModel;
 
 namespace Owhytee_Phones.Core.Application.Interface.Service;
 
@@ -10,4 +11,6 @@ public interface ICartService
     Task<CartResponse> RemoveFromCartAsync(string sessionId, int cartItemId);
     Task<bool> ClearCartAsync(string sessionId);
     Task<decimal> GetCartTotalAsync(string sessionId);
+    Task<PreferenceRequest> UpdatePreferencesAsync(string sessionId, bool MagicMode);
+    Task<PreferenceRequest?> GetPreferencesAsync(string sessionId);
 }

@@ -18,7 +18,11 @@ namespace Owhytee_Phones.Infrastructure.Repository
             await _context.Set<Cart>().AddAsync(cart);
             return cart;
         }
-
+        public async Task<Preference> AddAsync(Preference preference)
+        {
+            await _context.Set<Preference>().AddAsync(preference);
+            return preference;
+        }
         public async Task<bool> ExistAsync(int id)
         {
             return await _context.Carts.AnyAsync(a => a.Id == id);
@@ -36,6 +40,13 @@ namespace Owhytee_Phones.Infrastructure.Repository
                 .Where(a => !a.IsDeleted && a.Id == id)
                 .SingleOrDefaultAsync();
             return cart;
+        }
+
+        public async Task<Preference> GetAsync(string sessionId)
+        {
+            var preference = await _context.Set<Preference>()
+                    .FirstOrDefaultAsync(p => p.SessionId == sessionId);
+            return preference;
         }
 
         public async Task<Cart> GetAsync(Expression<Func<Cart, bool>> exp)

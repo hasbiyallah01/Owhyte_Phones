@@ -12,5 +12,7 @@ namespace Owhytee_Phones.Core.Application.Interface.Repository
         void Remove(Cart cart);
         Cart Update(Cart cart);
         Task<bool> ExistAsync(int id);
+        Task<Preference> GetAsync(string sessionId);
+        Task<Preference> AddAsync(Preference preference);
     }
 }

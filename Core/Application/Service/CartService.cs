@@ -4,6 +4,7 @@ using Owhytee_Phones.Core.Application.Interface.Service;
 using Owhytee_Phones.Core.Domain.Entity;
 using Owhytee_Phones.Infrastructure;
 using Owhytee_Phones.Models.CartModel;
+using Owhytee_Phones.Models.PreferenceModel;
 
 namespace Owhytee_Phones.Core.Application.Interface.Service;
 
@@ -195,5 +196,65 @@ public class CartService : ICartService
         };
     }
 
-    
+    public async Task<PreferenceRequest?> GetPreferencesAsync(string sessionId)
+    {
+        var preferences = await _cartRepository.GetAsync(sessionId);
+
+        if (preferences == null)
+        {
+            preferences = new Preference
+            {
+                SessionId = sessionId,
+                MagicModeEnabled = false,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            await _cartRepository.AddAsync(preferences);
+        }
+
+        return new PreferenceRequest
+        {
+            Id = preferences.Id,
+            SessionId = preferences.SessionId,
+            MagicModeEnabled = preferences.MagicModeEnabled,
+            CreatedAt = preferences.CreatedAt,
+            UpdatedAt = preferences.UpdatedAt
+        };
+    }
+
+
+    public async Task<PreferenceRequest> UpdatePreferencesAsync(string sessionId, bool MagicMode)
+    {
+        var preferences = await _cartRepository.GetAsync(sessionId);
+
+        if (preferences == null)
+        {
+            preferences = new Preference
+            {
+                SessionId = sessionId,
+                MagicModeEnabled = MagicMode,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            await _cartRepository.AddAsync(preferences);
+        }
+        else
+        {
+            preferences.MagicModeEnabled = MagicMode;
+            preferences.UpdatedAt = DateTime.UtcNow;
+        }
+
+        await _context.SaveChangesAsync();
+
+        return new PreferenceRequest
+        {
+            Id = preferences.Id,
+            SessionId = preferences.SessionId,
+            MagicModeEnabled = preferences.MagicModeEnabled,
+            CreatedAt = preferences.CreatedAt,
+            UpdatedAt = preferences.UpdatedAt
+        };
+    }
 }
