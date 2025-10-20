@@ -86,3 +86,6 @@ Built with Next.js 14, featuring magic mode, cooperative checkout, and admin das
 ---
 
 Built for real-world phone retail with a touch of magic
+
+#  DEMO VIDEO
+https://drive.google.com/file/d/1RYmz3m9vWptCPeVYpAFmfTQC0f5Xcaku/view?usp=sharing
