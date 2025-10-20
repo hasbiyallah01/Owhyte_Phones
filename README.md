@@ -89,4 +89,4 @@ Built for real-world phone retail with a touch of magic
 
 #  DEMO VIDEO
 Watch the full demo here:  
-[▶️ View on Google Drive](https://drive.google.com/file/d/1RYmz3m9vWptCPeVYpAFmfTQC0f5Xcaku/view?usp=sharing)
+[View on Google Drive](https://drive.google.com/file/d/1RYmz3m9vWptCPeVYpAFmfTQC0f5Xcaku/view?usp=sharing)
